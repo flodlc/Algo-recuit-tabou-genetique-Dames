@@ -15,9 +15,9 @@ public class Tabou {
 
 
     public Tabou() {
-        currentPlateau = new Plateau(Plateau.getInitialPlateau(100));
+        currentPlateau = new Plateau(Plateau.getInitialPlateau(20));
         n = 2500;
-        tabouMaxSize = 10;
+        tabouMaxSize = 50;
         tabou = new LinkedList<>();
         bestPlateau = new Plateau(currentPlateau.getArrayPosition().clone(), currentPlateau.getNbConflits());
     }
@@ -29,6 +29,7 @@ public class Tabou {
 
             if (voisin.getNbConflits() < bestPlateau.getNbConflits()) {
                 bestPlateau = voisin;
+                System.out.println(bestPlateau.getNbConflits());
             }
 
             if (voisin.getNbConflits() - currentPlateau.getNbConflits() >= 0) {
@@ -83,10 +84,8 @@ public class Tabou {
 
 
     private void addTabou(Movement movement) {
-        if (tabou.size() < tabouMaxSize) {
-            tabou.add(movement);
-        } else {
-            tabou.add(movement);
+        tabou.add(movement);
+        if (tabou.size() >= tabouMaxSize) {
             tabou.remove();
         }
     }

@@ -18,11 +18,11 @@ public class Recuit {
     private Plateau bestPlateau;
 
     public Recuit() {
-        currentPlateau = new Plateau(Plateau.getInitialPlateau(200));
+        currentPlateau = new Plateau(Plateau.getInitialPlateau(10000));
         bestPlateau = new Plateau(currentPlateau.getArrayPosition().clone(), currentPlateau.getNbConflits());
         temperature = 5.0;
         n1 = 2500;
-        n2 = 50;
+        n2 = 80;
     }
 
     public Plateau start() {

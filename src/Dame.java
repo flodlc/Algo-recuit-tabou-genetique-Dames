@@ -13,8 +13,8 @@ public class Dame {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Recuit recuit = new Recuit();
-        Plateau solution = recuit.start();
+        AlgoGen algo = new AlgoGen();
+        Plateau solution = algo.start();
         System.out.println(solution.getNbConflits());
     }
 
