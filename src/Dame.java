@@ -50,6 +50,14 @@ public class Dame {
         }
         System.out.println(solution.getNbConflits());
         System.out.println("Run time : " + (System.currentTimeMillis() - start));
+
+        System.out.println("Afficher la solution ?   1 : Yes    2 : Quit");
+        int rep = sc.nextInt();
+        if (rep == 1) {
+            for (int value : solution.getArrayPosition()) {
+                System.out.println(value + "  ");
+            }
+        }
     }
 
 }
