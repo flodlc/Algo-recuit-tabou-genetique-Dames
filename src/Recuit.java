@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
+
 import java.util.Random;
 
 /**
@@ -11,18 +13,23 @@ import java.util.Random;
  */
 public class Recuit {
 
+    //Paramètres de l'algo
+    private final double INITIAL_PROBABILITY = 0.00001;
+    private final double N1 = 25000;
+    private final double N2 = 10;
+    private final double GAMMA = 0.99;
+
+    private int plateauSize;
     private Double temperature;
-    private int n1;
-    private int n2;
     private Plateau currentPlateau;
     private Plateau bestPlateau;
 
-    public Recuit() {
-        currentPlateau = new Plateau(Plateau.getInitialPlateau(10000));
+    public Recuit(int plateauSize) {
+        this.plateauSize = plateauSize;
+        currentPlateau = new Plateau(Plateau.getInitialPlateau(plateauSize));
         bestPlateau = new Plateau(currentPlateau.getArrayPosition().clone(), currentPlateau.getNbConflits());
-        temperature = 5.0;
-        n1 = 2500;
-        n2 = 80;
+        temperature = calculInitialTemperature();
+        System.out.println("temp : " + temperature);
     }
 
     public Plateau start() {
@@ -30,8 +37,8 @@ public class Recuit {
         Random rnd = new Random();
         Double p;
 
-        for (int k = 0; k < n1; k++) {
-            for (int l = 0; l < n2; l++) {
+        for (int k = 0; k < N1; k++) {
+            for (int l = 0; l < N2; l++) {
                 Plateau plateauVoisin = Plateau.getVoisin(currentPlateau.getArrayPosition());
                 delta = plateauVoisin.getNbConflits() - currentPlateau.getNbConflits();
                 if (delta <= 0) {
@@ -39,19 +46,29 @@ public class Recuit {
                     if (plateauVoisin.getNbConflits() < bestPlateau.getNbConflits()) {
                         bestPlateau = new Plateau(plateauVoisin.getArrayPosition());
                         if (bestPlateau.getNbConflits() == 0) {
+                            System.out.println(k*N2 + " itérations");
                             return bestPlateau;
                         }
                     }
                 } else {
                     p = rnd.nextDouble();
-                    if (p <= Math.exp(-delta / temperature)) {
+                    if (p <= Math.exp(-((double) delta) / temperature)) {
                         currentPlateau = plateauVoisin;
                     }
                 }
             }
             System.out.println(bestPlateau.getNbConflits());
-            temperature = temperature * 0.98;
+            temperature = temperature > 0.0 ? temperature * GAMMA : temperature;
         }
         return bestPlateau;
+    }
+
+    private double calculInitialTemperature() {
+        double averageDelta = 0.0;
+        for (int i = 0; i < 20; i++) {
+            averageDelta += Math.abs(Plateau.getVoisin(currentPlateau.getArrayPosition()).getNbConflits() - currentPlateau.getNbConflits());
+        }
+        averageDelta = averageDelta / 20;
+        return -averageDelta / Math.log(INITIAL_PROBABILITY);
     }
 }

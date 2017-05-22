@@ -7,17 +7,18 @@ import java.util.Queue;
 public class Tabou {
 
 
+    private int TABOU_MAX_SIZE = 50;
+
+    private int plateauSize;
     private Plateau currentPlateau;
     private int n;
     private Queue<Movement> tabou;
-    private int tabouMaxSize;
     private Plateau bestPlateau;
 
-
-    public Tabou() {
-        currentPlateau = new Plateau(Plateau.getInitialPlateau(20));
+    public Tabou(int plateauSize) {
+        this.plateauSize = plateauSize;
+        currentPlateau = new Plateau(Plateau.getInitialPlateau(plateauSize));
         n = 2500;
-        tabouMaxSize = 50;
         tabou = new LinkedList<>();
         bestPlateau = new Plateau(currentPlateau.getArrayPosition().clone(), currentPlateau.getNbConflits());
     }
@@ -37,7 +38,10 @@ public class Tabou {
             }
             currentPlateau = voisin;
 
-            if (bestPlateau.getNbConflits() == 0) return bestPlateau;
+            if (bestPlateau.getNbConflits() == 0) {
+                System.out.println((k+1) + " itérations");
+                return bestPlateau;
+            }
         }
         return bestPlateau;
     }
@@ -85,7 +89,7 @@ public class Tabou {
 
     private void addTabou(Movement movement) {
         tabou.add(movement);
-        if (tabou.size() >= tabouMaxSize) {
+        if (tabou.size() >= TABOU_MAX_SIZE) {
             tabou.remove();
         }
     }
